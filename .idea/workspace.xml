@@ -14,30 +14,17 @@
       <file leaf-file-name="API_SEMANTIC.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/API_SEMANTIC.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="532">
-              <caret line="217" column="0" lean-forward="false" selection-start-line="217" selection-start-column="0" selection-end-line="217" selection-end-column="0" />
+            <state relative-caret-position="642">
+              <caret line="242" column="33" lean-forward="false" selection-start-line="242" selection-start-column="33" selection-end-line="242" selection-end-column="33" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
-                <element signature="e#1538#2225#0" expanded="false" />
-                <element signature="e#2267#2548#0" expanded="false" />
-                <element signature="e#2585#3324#0" expanded="false" />
-                <element signature="e#3367#4511#0" expanded="false" />
-                <element signature="e#4551#5408#0" expanded="false" />
-                <element signature="e#7554#8247#0" expanded="false" />
-                <element signature="e#8292#9420#0" expanded="false" />
-                <element signature="e#9467#10601#0" expanded="false" />
-                <element signature="e#10643#11004#0" expanded="false" />
-                <element signature="e#11043#11654#0" expanded="false" />
-                <element signature="e#13397#13679#0" expanded="false" />
-                <element signature="e#13737#14108#0" expanded="false" />
-                <element signature="e#14157#14336#0" expanded="false" />
-                <element signature="e#16873#19360#0" expanded="false" />
-                <element signature="e#19404#19673#0" expanded="false" />
-                <element signature="e#19726#20750#0" expanded="false" />
-                <element signature="e#20796#21443#0" expanded="false" />
-                <element signature="e#21503#22217#0" expanded="false" />
-                <element signature="e#24366#25259#0" expanded="false" />
-                <element signature="e#25303#25575#0" expanded="false" />
+                <element signature="e#1379#2066#0" expanded="false" />
+                <element signature="e#2108#2389#0" expanded="false" />
+                <element signature="e#2426#3165#0" expanded="false" />
+                <element signature="e#3208#4352#0" expanded="false" />
+                <element signature="e#4392#5249#0" expanded="false" />
+                <element signature="e#5289#7317#0" expanded="false" />
+                <element signature="e#7367#8361#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -268,30 +255,17 @@
     <entry file="file://$PROJECT_DIR$/API_SENTIMENT.py" />
     <entry file="file://$PROJECT_DIR$/API_SEMANTIC.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="532">
-          <caret line="217" column="0" lean-forward="false" selection-start-line="217" selection-start-column="0" selection-end-line="217" selection-end-column="0" />
+        <state relative-caret-position="642">
+          <caret line="242" column="33" lean-forward="false" selection-start-line="242" selection-start-column="33" selection-end-line="242" selection-end-column="33" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
-            <element signature="e#1538#2225#0" expanded="false" />
-            <element signature="e#2267#2548#0" expanded="false" />
-            <element signature="e#2585#3324#0" expanded="false" />
-            <element signature="e#3367#4511#0" expanded="false" />
-            <element signature="e#4551#5408#0" expanded="false" />
-            <element signature="e#7554#8247#0" expanded="false" />
-            <element signature="e#8292#9420#0" expanded="false" />
-            <element signature="e#9467#10601#0" expanded="false" />
-            <element signature="e#10643#11004#0" expanded="false" />
-            <element signature="e#11043#11654#0" expanded="false" />
-            <element signature="e#13397#13679#0" expanded="false" />
-            <element signature="e#13737#14108#0" expanded="false" />
-            <element signature="e#14157#14336#0" expanded="false" />
-            <element signature="e#16873#19360#0" expanded="false" />
-            <element signature="e#19404#19673#0" expanded="false" />
-            <element signature="e#19726#20750#0" expanded="false" />
-            <element signature="e#20796#21443#0" expanded="false" />
-            <element signature="e#21503#22217#0" expanded="false" />
-            <element signature="e#24366#25259#0" expanded="false" />
-            <element signature="e#25303#25575#0" expanded="false" />
+            <element signature="e#1379#2066#0" expanded="false" />
+            <element signature="e#2108#2389#0" expanded="false" />
+            <element signature="e#2426#3165#0" expanded="false" />
+            <element signature="e#3208#4352#0" expanded="false" />
+            <element signature="e#4392#5249#0" expanded="false" />
+            <element signature="e#5289#7317#0" expanded="false" />
+            <element signature="e#7367#8361#0" expanded="false" />
           </folding>
         </state>
       </provider>
