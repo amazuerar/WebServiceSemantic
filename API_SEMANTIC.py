@@ -9,6 +9,7 @@ matplotlib.use('Agg')
 import re
 import sys
 reload(sys)
+from SPARQLWrapper import SPARQLWrapper, JSON
 sys.setdefaultencoding('utf8')
 
 # Configuracion de las caracteristicas de los servicios
@@ -30,7 +31,8 @@ class Application( tornado.web.Application ):
             (r"/getTracksByID/(.*)", getTracksByID),
             (r"/getTweetsByID/(.*)", getTweetsByID),
             (r"/getSimilarQuestionsByID/(.*)", getSimilarQuestionsByID),
-            (r"/getQuestionsByQuery/(.*)", getQuestionsByQuery)
+            (r"/getQuestionsByQuery/(.*)", getQuestionsByQuery),
+            (r"/getSparqlQuery/(.*)", getSparqlQuery)
 		]
         tornado.web.Application.__init__( self, handlers )
 
@@ -134,9 +136,14 @@ class getTracksByID(BaseHandler):
                 for per in item['entities_persons']:
                     persons.append(per)
 
+        nduppersons = []
+        for i in persons:
+            if i not in nduppersons:
+                nduppersons.append(i)
+
         response = []
 
-        for person in persons:
+        for person in nduppersons:
             tracksData = {}
             tracksData['artist'] = person
             tracksAll = tracks.find({"artist_found_name" : person})
@@ -243,6 +250,66 @@ class getQuestionsByQuery(BaseHandler):
             response = mine.find({"$text": {"$search": query, "$language": "en"}}, {"score": {"$meta": "textScore"}})
             response.sort([('score', {'$meta': 'textScore'})])
             self.write(dumps(response))
+
+
+class getSparqlQuery(BaseHandler):
+                def get(self, id):
+
+                    client = MongoClient('bigdata-mongodb-01', 27017)
+                    db = client['Grupo10']
+                    mine = db['w4_musicfans']
+
+                    persons = []
+
+                    json = mine.find({"$or": [{"_id": id}, {"in_reply_to": int(id)}]},
+                                     {'_id': 0, 'entities_persons': 1})
+
+                    for item in json:
+                        if len(item['entities_persons']) > 0:
+                            for per in item['entities_persons']:
+                                persons.append(per)
+
+                    nduppersons = []
+                    for i in persons:
+                        if i not in nduppersons:
+                            nduppersons.append(i)
+
+                    fresults = []
+                    if len(nduppersons)>0:
+                        for per in nduppersons:
+
+                            try:
+                                sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+                                sparql.setQuery("""
+                                PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                                PREFIX dbo: <http://dbpedia.org/ontology/>
+                                SELECT DISTINCT ?singer ?name ?birthPlace ?birthDate ?genre ?residence ?partner ?thumbnail ?abstract
+                                WHERE { 
+                                ?x dbo:musicalArtist ?singer.
+                                OPTIONAL{ ?singer foaf:name ?name }
+                                OPTIONAL{ ?singer dbo:birthPlace ?birthPlace }
+                                OPTIONAL{ ?singer dbo:birthDate ?birthDate }
+                                OPTIONAL{ ?x dbo:genre ?genre }
+                                OPTIONAL{ ?singer dbo:residence ?residence }
+                                OPTIONAL{ ?singer dbo:partner ?partner }
+                                OPTIONAL{ ?singer dbo:thumbnail ?thumbnail }
+                                OPTIONAL{ ?singer dbo:abstract ?abstract }
+                                FILTER langMatches(lang(?abstract),'en')
+                                FILTER (regex(?name,'^""" + per + """'))
+                                }
+                                GROUP BY ?genre LIMIT 1
+                                """)
+                                sparql.setReturnFormat(JSON)
+                                results = sparql.query().convert()
+
+                                if len(results["results"]["bindings"])>0:
+                                    fresults.append(results["results"])
+
+                            except Exception:
+                                continue
+
+                    self.write(dumps(fresults))
+
 
 #Metodo main
 if __name__ == "__main__":
