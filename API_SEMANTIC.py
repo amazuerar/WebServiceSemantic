@@ -32,10 +32,10 @@ class Application( tornado.web.Application ):
             (r"/getTweetsByID/(.*)", getTweetsByID),
             (r"/getSimilarQuestionsByID/(.*)", getSimilarQuestionsByID),
             (r"/getQuestionsByQuery/(.*)", getQuestionsByQuery),
-            (r"/getSparqlQuery/(.*)", getSparqlQuery)
+            (r"/getSparqlQuery/(.*)", getSparqlQuery),
+            (r"/getLocationsViaSparqlQuery/(.*)", getLocationsViaSparqlQuery)
 		]
         tornado.web.Application.__init__( self, handlers )
-
 
 class getQuestions(BaseHandler):
     def get(self):
@@ -251,7 +251,6 @@ class getQuestionsByQuery(BaseHandler):
             response.sort([('score', {'$meta': 'textScore'})])
             self.write(dumps(response))
 
-
 class getSparqlQuery(BaseHandler):
                 def get(self, id):
 
@@ -309,6 +308,79 @@ class getSparqlQuery(BaseHandler):
                                 continue
 
                     self.write(dumps(fresults))
+
+class getLocationsViaSparqlQuery(BaseHandler):
+                    def get(self, id):
+
+                        client = MongoClient('bigdata-mongodb-01', 27017)
+                        db = client['Grupo10']
+                        mine = db['w4_musicfans']
+
+                        locations = []
+
+                        json = mine.find({"$or": [{"_id": id}, {"in_reply_to": int(id)}]},
+                                         {'_id': 0, 'entities_locations': 1})
+
+                        for item in json:
+                            if len(item['entities_locations']) > 0:
+                                for loc in item['entities_locations']:
+                                    locations.append(loc)
+
+                        nduplocations = []
+                        for i in locations:
+                            if i not in nduplocations:
+                                nduplocations.append(i)
+
+                        fresults = []
+                        if len(nduplocations) > 0:
+                            for loc in nduplocations:
+
+                                try:
+                                    sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+                                    sparql.setQuery("""
+                                    PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+                                    PREFIX dbo: <http://dbpedia.org/ontology/>
+                                    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                                    SELECT DISTINCT ?name ?lat ?long ?abstract WHERE {
+                                    {
+                                    ?s a dbo:Country .
+                                    ?s foaf:name ?name.  
+                                    ?s geo:lat ?lat .
+                                    ?s geo:long ?long. 
+                                    OPTIONAL{ ?s dbo:abstract ?abstract }
+                                    }
+                                    UNION
+                                    {
+                                    ?s a dbo:City .
+                                    ?s foaf:name ?name.  
+                                    ?s geo:lat ?lat .
+                                    ?s geo:long ?long. 
+                                    OPTIONAL{ ?s dbo:abstract ?abstract }
+                                    }
+                                    UNION
+                                    {
+                                    ?s a dbo:Place .
+                                    ?s foaf:name ?name.  
+                                    ?s geo:lat ?lat .
+                                    ?s geo:long ?long. 
+                                    OPTIONAL{ ?s dbo:abstract ?abstract }
+                                    }
+                                    FILTER langMatches(lang(?name),'en')
+                                    FILTER langMatches(lang(?abstract),'en')
+                                    FILTER (regex(?name,'^""" + loc + """'))
+                                    }
+                                    LIMIT 1
+                                    """)
+                                    sparql.setReturnFormat(JSON)
+                                    results = sparql.query().convert()
+
+                                    if len(results["results"]["bindings"]) > 0:
+                                        fresults.append(results["results"])
+
+                                except Exception:
+                                    continue
+
+                        self.write(dumps(fresults))
 
 
 #Metodo main
